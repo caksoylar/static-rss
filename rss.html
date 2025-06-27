@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>${feed.feed.title | h}</title>
+    <title>Combined RSS Feed</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
         body {
@@ -30,7 +30,7 @@
             background: white;
             border-radius: 12px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            max-width: 320px;
+            max-width: 340px;
             padding: 1.5rem;
             display: flex;
             flex-direction: column;
@@ -51,6 +51,13 @@
         .article-date {
             font-size: 0.875rem;
             color: #888;
+            margin-bottom: 0.5rem;
+        }
+
+        .article-source {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #555;
             margin-bottom: 1rem;
         }
 
@@ -73,12 +80,13 @@
     </style>
 </head>
 <body>
-    <h1>${feed.feed.title | h}</h1>
+    <h1>Latest Articles from Multiple Feeds</h1>
     <div class="articles-container">
-        % for entry in feed.entries:
+        % for entry in all_entries:
             <div class="article-card">
                 <a href="${entry.link}" class="article-title" target="_blank">${entry.title | h}</a>
-                <div class="article-date">${getattr(entry, 'published', 'No date')}</div>
+                <div class="article-date">${entry.published}</div>
+                <div class="article-source">From: ${entry.source_title | h}</div>
                 <div class="article-summary">
                     ${getattr(entry, 'summary', 'No summary available') | h}
                 </div>

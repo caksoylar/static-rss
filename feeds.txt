@@ -1,2 +1,3 @@
 https://feedparser.readthedocs.io/en/latest/examples/atom10.xml
+https://www.theverge.com/rss/partner/subscriber-only-full-feed/rss.xml
 https://feeds.arstechnica.com/arstechnica/index
