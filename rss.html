@@ -93,6 +93,9 @@
     <div class="articles-container">
         % for entry in all_entries:
             <div class="article-card">
+        % if entry.image_url:
+            <img src="${entry.image_url}" alt="Thumbnail for ${entry.title | h}" style="width:100%; border-radius:8px; margin-bottom:1rem; object-fit: cover; max-height: 200px;">
+        % endif
                 <a href="${entry.link}" class="article-title" target="_blank">${entry.title | h}</a>
                 <div class="article-date" data-dt="${entry.published_datetime.isoformat()}"></div>
                 <div class="article-source">From: ${entry.source_title | h}</div>
