@@ -78,6 +78,15 @@
             text-decoration: underline;
         }
     </style>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll('.article-date').forEach(function (el) {
+          const isoString = el.dataset.dt;
+          const date = new Date(isoString);
+          el.textContent = date.toLocaleString();  // or use toLocaleDateString() / toLocaleTimeString()
+        });
+      });
+    </script>
 </head>
 <body>
     <h1>Latest Articles from Multiple Feeds</h1>
@@ -85,7 +94,7 @@
         % for entry in all_entries:
             <div class="article-card">
                 <a href="${entry.link}" class="article-title" target="_blank">${entry.title | h}</a>
-                <div class="article-date">${entry.published}</div>
+                <div class="article-date" data-dt="${entry.published_datetime.isoformat()}"></div>
                 <div class="article-source">From: ${entry.source_title | h}</div>
                 <div class="article-summary">
                     ${getattr(entry, 'summary', 'No summary available') | h}
