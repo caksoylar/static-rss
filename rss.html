@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>${feed.feed.title | h}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+            padding: 2rem;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .articles-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
+        }
+
+        .article-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            max-width: 320px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s ease;
+        }
+
+        .article-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .article-title {
+            font-size: 1.25rem;
+            margin: 0 0 0.5rem;
+            color: #0056b3;
+            text-decoration: none;
+        }
+
+        .article-date {
+            font-size: 0.875rem;
+            color: #888;
+            margin-bottom: 1rem;
+        }
+
+        .article-summary {
+            font-size: 1rem;
+            color: #555;
+            flex-grow: 1;
+        }
+
+        .read-more {
+            margin-top: 1rem;
+            font-weight: 600;
+            color: #0077cc;
+            text-decoration: none;
+        }
+
+        .read-more:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>${feed.feed.title | h}</h1>
+    <div class="articles-container">
+        % for entry in feed.entries:
+            <div class="article-card">
+                <a href="${entry.link}" class="article-title" target="_blank">${entry.title | h}</a>
+                <div class="article-date">${getattr(entry, 'published', 'No date')}</div>
+                <div class="article-summary">
+                    ${getattr(entry, 'summary', 'No summary available') | h}
+                </div>
+                <a class="read-more" href="${entry.link}" target="_blank">Read more →</a>
+            </div>
+        % endfor
+    </div>
+</body>
+</html>

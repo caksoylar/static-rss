@@ -1,0 +1,2 @@
+https://feedparser.readthedocs.io/en/latest/examples/atom10.xml
+https://feeds.arstechnica.com/arstechnica/index
