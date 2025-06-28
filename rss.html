@@ -30,6 +30,7 @@
             border-radius: 12px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             max-width: 340px;
+            width: 100%;
             padding: 1.5rem;
             display: flex;
             flex-direction: column;
@@ -41,10 +42,12 @@
         }
 
         .article-title {
-            font-size: 1.25rem;
-            margin: 0 0 0.5rem;
             color: #0056b3;
             text-decoration: none;
+        }
+
+        .article-title > h3 {
+            margin: 0 0 0.5rem;
         }
 
         .article-date {
@@ -73,13 +76,15 @@
             font-size: 1rem;
             color: #555;
             flex-grow: 1;
+            max-height: 6em;
+            overflow: hidden;
         }
 
         .article-image {
             width: 100%;
             border-radius: 8px;
             margin-bottom: 1rem;
-            object-fit: cover;
+            object-fit: scale-down;
             max-height: 200px;
         }
 
@@ -111,23 +116,24 @@
 <body>
     <div class="articles-container">
         % for entry in all_entries:
-            <div class="article-card">
+        <div class="article-card">
         % if entry.image_url:
             <img src="${entry.image_url}" alt="Thumbnail for ${entry.title | h}" class="article-image">
         % endif
-                <a href="${entry.link}" class="article-title" target="_blank">${entry.title | h}</a>
-                <div class="article-date" data-dt="${entry.published_datetime.isoformat()}"></div>
-                <div class="article-source">
-                    % if entry.source_icon_url:
-                        <img src="${entry.source_icon_url}" alt="Logo" class="article-source-icon">
-                    % endif
-                    <span>${entry.source_title | h}</span>
-                </div>
-                <div class="article-summary">
-                    ${getattr(entry, 'summary', 'No summary available')}
-                </div>
-                <a class="read-more" href="${entry.link}" target="_blank">Read more →</a>
+            <a class="article-title" href="${entry.link}" target="_blank" aria-label="${entry.title}">
+                <h3>${entry.title | h}</h3>
+            </a>
+            <div class="article-date" data-dt="${entry.published_datetime.isoformat()}"></div>
+            <div class="article-source">
+            % if entry.source_icon_url:
+                <img src="${entry.source_icon_url}" alt="Logo" class="article-source-icon">
+            % endif
+                <span>${entry.source_title | h}</span>
             </div>
+            <div class="article-summary">
+                ${getattr(entry, 'summary', 'No summary available')}
+            </div>
+        </div>
         % endfor
     </div>
 </body>
