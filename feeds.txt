@@ -5,3 +5,4 @@ https://lobste.rs/rss
 https://discuss.kakoune.com/posts.rss
 https://www.rockpapershotgun.com/feed
 https://kbd.news/rss2.php
+https://www.vox.com/rss/index.xml
