@@ -44,7 +44,7 @@ def main():
         title = d["feed"]["title"]
         icon = get_feed_icon(d)
         for entry in d["entries"]:
-            entry.published_datetime = datetime.fromtimestamp(time.mktime(entry["published_parsed"]), tz=timezone.utc)
+            entry.published_datetime = datetime(*entry["published_parsed"][:6], tzinfo=timezone.utc)
             entry.source_title = title
             entry.image_url = extract_image(entry)
             entry.source_icon_url = icon
