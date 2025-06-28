@@ -39,8 +39,8 @@ def main():
 
     entries = []
     for feed in feeds:
-        print(feed)
         d = feedparser.parse(feed)
+        print(f"{feed}: {len(d['entries'])}")
         title = d["feed"]["title"]
         icon = get_feed_icon(d)
         for entry in d["entries"]:

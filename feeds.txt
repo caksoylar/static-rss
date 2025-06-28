@@ -1,7 +1,6 @@
-https://feedparser.readthedocs.io/en/latest/examples/atom10.xml
 https://www.theverge.com/rss/index.xml
 https://feeds.arstechnica.com/arstechnica/index
-https://lobste.rs/rss
+https://lobste.rs/t/python,visualization,art,editors,math,science.rss
 https://discuss.kakoune.com/posts.rss
 https://www.rockpapershotgun.com/feed
 https://kbd.news/rss2.php
