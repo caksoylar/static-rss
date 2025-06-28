@@ -4,3 +4,4 @@ https://feeds.arstechnica.com/arstechnica/index
 https://lobste.rs/rss
 https://discuss.kakoune.com/posts.rss
 https://www.rockpapershotgun.com/feed
+https://kbd.news/rss2.php
