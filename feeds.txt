@@ -3,3 +3,4 @@ https://www.theverge.com/rss/partner/subscriber-only-full-feed/rss.xml
 https://feeds.arstechnica.com/arstechnica/index
 https://lobste.rs/rss
 https://discuss.kakoune.com/posts.rss
+https://www.rockpapershotgun.com/feed
