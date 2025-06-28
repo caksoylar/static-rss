@@ -1,7 +1,7 @@
 https://www.theverge.com/rss/index.xml
 https://feeds.arstechnica.com/arstechnica/index
 https://lobste.rs/t/python,visualization,art,editors,math,science.rss
-https://discuss.kakoune.com/posts.rss
+https://discuss.kakoune.com/latest.rss?order=created
 https://www.rockpapershotgun.com/feed
 https://kbd.news/rss2.php
 https://www.vox.com/rss/index.xml
