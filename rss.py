@@ -2,6 +2,7 @@ import re
 import sys
 import time
 from datetime import datetime, timezone
+from textwrap import shorten
 
 import feedparser
 from mako.template import Template
@@ -9,20 +10,19 @@ from mako.template import Template
 
 def extract_image(entry):
     # 1. Check media content
-    if hasattr(entry, 'media_content') and entry.media_content:
-        return entry.media_content[0].get('url')
+    if content := entry.get('media_content'):
+        return content[0].get('url')
 
     # 2. Check enclosures
-    if hasattr(entry, 'enclosures') and entry.enclosures:
-        for enclosure in entry.enclosures:
+    if enclosures := entry.get('enclosures'):
+        for enclosure in enclosures:
             if enclosure.get('type', '').startswith('image/'):
                 return enclosure.get('href')
 
     # 3. Fallback: look for <img> in summary
-    if hasattr(entry, 'summary'):
-        match = re.search(r'<img[^>]+src="([^">]+)"', entry.summary)
-        if match:
-            return match.group(1)
+    if summary := entry.get('summary'):
+        if m := re.search(r'<img[^>]+src="([^">]+)"', summary):
+            return m.group(1)
 
     return None
 
@@ -41,7 +41,7 @@ def main():
     for feed in feeds:
         d = feedparser.parse(feed)
         print(f"{feed}: {len(d['entries'])}")
-        title = d["feed"]["title"]
+        title = shorten(d["feed"]["title"], width=40, placeholder="…")
         icon = get_feed_icon(d)
         for entry in d["entries"]:
             entry.published_datetime = datetime(*entry["published_parsed"][:6], tzinfo=timezone.utc)

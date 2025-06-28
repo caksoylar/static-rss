@@ -5,3 +5,4 @@ https://discuss.kakoune.com/latest.rss?order=created
 https://www.rockpapershotgun.com/feed
 https://kbd.news/rss2.php
 https://www.vox.com/rss/index.xml
+https://www.quantamagazine.org/feed
