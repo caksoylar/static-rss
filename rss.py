@@ -27,6 +27,10 @@ def extract_image(entry):
     return None
 
 
+def get_feed_icon(d):
+    return d["feed"].get("image", {}).get("href")
+
+
 def main():
     template = Template(filename="rss.html")
 
@@ -35,12 +39,15 @@ def main():
 
     entries = []
     for feed in feeds:
+        print(feed)
         d = feedparser.parse(feed)
         title = d["feed"]["title"]
+        icon = get_feed_icon(d)
         for entry in d["entries"]:
             entry.published_datetime = datetime.fromtimestamp(time.mktime(entry["published_parsed"]), tz=timezone.utc)
             entry.source_title = title
             entry.image_url = extract_image(entry)
+            entry.source_icon_url = icon
             entries.append(entry)
 
     entries.sort(key=lambda x: x.published_datetime, reverse=True)

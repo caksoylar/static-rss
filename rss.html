@@ -98,9 +98,14 @@
         % endif
                 <a href="${entry.link}" class="article-title" target="_blank">${entry.title | h}</a>
                 <div class="article-date" data-dt="${entry.published_datetime.isoformat()}"></div>
-                <div class="article-source">From: ${entry.source_title | h}</div>
+                <div class="article-source" style="display: flex; align-items: center; gap: 0.5rem;">
+                    % if entry.source_icon_url:
+                        <img src="${entry.source_icon_url}" alt="Logo" style="width: 20px; height: 20px; border-radius: 4px;">
+                    % endif
+                    <span>From: ${entry.source_title | h}</span>
+                </div>
                 <div class="article-summary">
-                    ${getattr(entry, 'summary', 'No summary available') | h}
+                    ${getattr(entry, 'summary', 'No summary available')}
                 </div>
                 <a class="read-more" href="${entry.link}" target="_blank">Read more →</a>
             </div>
