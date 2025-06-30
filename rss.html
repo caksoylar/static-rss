@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base target="_blank">
     <title>Combined RSS Feed</title>
     <link rel="icon" type="image/png" href="favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
@@ -150,7 +151,7 @@
         % else:
             <div class="article-image"></div>
         % endif
-            <a class="article-title" href="${entry.link}" target="_blank" aria-label="${entry.title}">
+            <a class="article-title" href="${entry.link}" aria-label="${entry.title}">
                 <h3>${entry.title}</h3>
             </a>
             <div class="article-date" data-dt="${entry.published_datetime.isoformat()}"></div>
