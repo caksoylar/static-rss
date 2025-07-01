@@ -7,7 +7,8 @@ on:
     branches: ["main"]
 
   schedule:
-    - cron: '*/30 * * * *'
+    - cron: '13,43 0-6,14-23 * * *' # every half hour between 7am-12am PDT
+    - cron: '13    8,10,12   * * *' # every two hours between 1am-5am PDT
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
