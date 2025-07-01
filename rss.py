@@ -4,6 +4,7 @@ import re
 import sys
 from datetime import datetime, timezone
 from textwrap import shorten
+from urllib.parse import urlparse
 
 import feedparser
 from mako.template import Template
@@ -30,9 +31,13 @@ def extract_image(entry):
     return None
 
 
-def get_feed_icon(d):
+def get_feed_icon(d, url):
     """Try to find an icon for a given feed, might be extended later."""
-    return d["feed"].get("image", {}).get("href")
+    if feed_image := d["feed"].get("image", {}).get("href"):
+        return feed_image
+
+    p = urlparse(url)
+    return f"{p.scheme}://{p.netloc}/favicon.ico"
 
 
 def main():
@@ -43,11 +48,11 @@ def main():
         feeds = f.read().splitlines()
 
     entries = []
-    for feed in feeds:
-        d = feedparser.parse(feed)
-        print(f"{feed}: {len(d['entries'])}")
+    for feed_url in feeds:
+        d = feedparser.parse(feed_url)
+        print(f"{feed_url}: {len(d['entries'])}")
         title = shorten(d["feed"]["title"], width=40, placeholder="…")
-        icon = get_feed_icon(d)
+        icon = get_feed_icon(d, feed_url)
         for entry in d["entries"]:
             entry.published_datetime = datetime(
                 *entry["published_parsed"][:6], tzinfo=timezone.utc

@@ -157,7 +157,7 @@
             <div class="article-date" data-dt="${entry.published_datetime.isoformat()}"></div>
             <div class="article-source">
             % if entry.source_icon_url:
-                <img src="${entry.source_icon_url}" alt="Logo" class="article-source-icon">
+                <img src="${entry.source_icon_url}" alt="${entry.source_title[0]}" class="article-source-icon">
             % endif
                 <span>${entry.source_title | h}</span>
             </div>
