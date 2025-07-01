@@ -2,6 +2,7 @@
 
 import re
 import sys
+from collections import Counter
 from datetime import datetime, timezone
 from textwrap import shorten
 from urllib.parse import urlparse
@@ -65,6 +66,10 @@ def main():
     entries.sort(key=lambda x: x.published_datetime, reverse=True)
     with open(sys.argv[2], "w", encoding="utf-8") as fo:
         fo.write(template.render(all_entries=entries))
+
+    print(f"\nTop 100 stats:")
+    for feed, count in Counter((post.source_title for post in entries[:100])).most_common():
+        print(f"{count:2d} <- {feed}")
 
 
 if __name__ == "__main__":
