@@ -9,4 +9,3 @@ https://www.quantamagazine.org/feed
 https://www.theatlantic.com/feed/all/
 https://www.propublica.org/feeds/propublica/main
 https://calmatters.org/feed/
-https://paulkrugman.substack.com/feed
