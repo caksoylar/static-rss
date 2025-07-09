@@ -1,7 +1,8 @@
 """Simple RSS "reader" that fetches entries from a list of feeds, then renders an html."""
 
+import json
 import re
-import sys
+from argparse import ArgumentParser
 from collections import Counter
 from datetime import datetime, timezone
 from textwrap import shorten
@@ -43,33 +44,54 @@ def get_feed_icon(d, url):
 
 def main():
     """Read template, feed list, render to last arg as html."""
-    template = Template(filename="rss.html")
+    ap = ArgumentParser("rss")
+    ap.add_argument("-f", "--feed-list", type=str)
+    ap.add_argument("-t", "--template", type=str, default="rss.html")
+    ap.add_argument("-d", "--dump-feeds", type=str)
+    ap.add_argument("-i", "--import-feeds", type=str)
+    ap.add_argument("-o", "--output-html", type=str)
+    args = ap.parse_args()
 
-    with open(sys.argv[1], encoding="utf-8") as f:
-        feeds = f.read().splitlines()
+    assert args.feed_list or args.import_feeds
+    if args.output_html:
+        assert args.template
 
-    entries = []
-    for feed_url in feeds:
-        d = feedparser.parse(feed_url)
-        print(f"{feed_url}: {len(d['entries'])}")
-        title = shorten(d["feed"]["title"], width=40, placeholder="…")
-        icon = get_feed_icon(d, feed_url)
-        for entry in d["entries"]:
-            entry.published_datetime = datetime(
-                *entry["published_parsed"][:6], tzinfo=timezone.utc
-            )
-            entry.source_title = title
-            entry.image_url = extract_image(entry)
-            entry.source_icon_url = icon
-            entries.append(entry)
+    if args.feed_list:
+        with open(args.feed_list, encoding="utf-8") as f:
+            feeds = f.read().splitlines()
 
-    entries.sort(key=lambda x: x.published_datetime, reverse=True)
-    with open(sys.argv[2], "w", encoding="utf-8") as fo:
-        fo.write(template.render(all_entries=entries))
+        entries = []
+        for feed_url in feeds:
+            d = feedparser.parse(feed_url)
+            print(f"{feed_url}: {len(d['entries'])}")
+            title = shorten(d["feed"]["title"], width=40, placeholder="…")
+            icon = get_feed_icon(d, feed_url)
+            for entry in d["entries"]:
+                entry.published_datetime = datetime(
+                    *entry["published_parsed"][:6], tzinfo=timezone.utc
+                )
+                entry.source_title = title
+                entry.image_url = extract_image(entry)
+                entry.source_icon_url = icon
+                entries.append(entry)
 
-    print(f"\nTop 100 stats:")
+        entries.sort(key=lambda x: x.published_datetime, reverse=True)
+    else:
+        with open(args.import_feeds, "r", encoding="utf-8") as f:
+            entries = json.load(f)
+
+    print("\nTop 100 stats:")
     for feed, count in Counter((post.source_title for post in entries[:100])).most_common():
         print(f"{count:2d} <- {feed}")
+
+    if args.dump_feeds:
+        with open(args.dump_feeds, "w", encoding="utf-8") as fo:
+            json.dump(entries, fo)
+
+    if args.output_html:
+        template = Template(filename=args.template)
+        with open(args.output_html, "w", encoding="utf-8") as fo:
+            fo.write(template.render(all_entries=entries))
 
 
 if __name__ == "__main__":
