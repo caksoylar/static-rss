@@ -146,23 +146,23 @@
     <div class="articles-container">
         % for entry in all_entries:
         <div class="article-card">
-        % if entry.image_url:
-            <img src="${entry.image_url}" alt="Thumbnail for ${entry.title | h}" class="article-image">
+        % if entry['image_url']:
+            <img src="${entry['image_url']}" alt="Thumbnail for ${entry['title'] | h}" class="article-image">
         % else:
             <div class="article-image"></div>
         % endif
-            <a class="article-title" href="${entry.link}" aria-label="${entry.title}">
-                <h3>${entry.title}</h3>
+            <a class="article-title" href="${entry['link']}" aria-label="${entry['title']}">
+                <h3>${entry['title']}</h3>
             </a>
-            <div class="article-date" data-dt="${entry.published_datetime.isoformat()}"></div>
+            <div class="article-date" data-dt="${entry['published_datetime'].isoformat()}"></div>
             <div class="article-source">
-            % if entry.source_icon_url:
-                <img src="${entry.source_icon_url}" alt="${entry.source_title[0]}" class="article-source-icon">
+            % if entry['source_icon_url']:
+                <img src="${entry['source_icon_url']}" alt="${entry['source_title'][0]}" class="article-source-icon">
             % endif
-                <span>${entry.source_title | h}</span>
+                <span>${entry['source_title'] | h}</span>
             </div>
             <div class="article-summary">
-                ${getattr(entry, 'summary', 'No summary available')}
+                ${entry.get('summary', 'No summary available')}
             </div>
         </div>
         % endfor

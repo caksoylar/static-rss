@@ -58,35 +58,38 @@ def main():
 
     if args.feed_list:
         with open(args.feed_list, encoding="utf-8") as f:
-            feeds = f.read().splitlines()
+            feed_urls = f.read().splitlines()
 
-        entries = []
-        for feed_url in feeds:
+        feeds = []
+        for feed_url in feed_urls:
             d = feedparser.parse(feed_url)
             print(f"{feed_url}: {len(d['entries'])}")
-            title = shorten(d["feed"]["title"], width=40, placeholder="…")
-            icon = get_feed_icon(d, feed_url)
-            for entry in d["entries"]:
-                entry.published_datetime = datetime(
-                    *entry["published_parsed"][:6], tzinfo=timezone.utc
-                )
-                entry.source_title = title
-                entry.image_url = extract_image(entry)
-                entry.source_icon_url = icon
-                entries.append(entry)
-
-        entries.sort(key=lambda x: x.published_datetime, reverse=True)
+            feeds.append((feed_url, d))
     else:
         with open(args.import_feeds, "r", encoding="utf-8") as f:
-            entries = json.load(f)
-
-    print("\nTop 100 stats:")
-    for feed, count in Counter((post.source_title for post in entries[:100])).most_common():
-        print(f"{count:2d} <- {feed}")
+            feeds = json.load(f)
 
     if args.dump_feeds:
         with open(args.dump_feeds, "w", encoding="utf-8") as fo:
-            json.dump(entries, fo)
+            json.dump(feeds, fo)
+
+    entries = []
+    for feed_url, feed in feeds:
+        title = shorten(feed["feed"]["title"], width=40, placeholder="…")
+        icon = get_feed_icon(feed, feed_url)
+        for entry in feed["entries"]:
+            entry["published_datetime"] = datetime(
+                *entry["published_parsed"][:6], tzinfo=timezone.utc
+            )
+            entry["source_title"] = title
+            entry["image_url"] = extract_image(entry)
+            entry["source_icon_url"] = icon
+            entries.append(entry)
+    entries.sort(key=lambda x: x["published_datetime"], reverse=True)
+
+    print("\nTop 100 stats:")
+    for feed, count in Counter((post["source_title"] for post in entries[:100])).most_common():
+        print(f"{count:2d} <- {feed}")
 
     if args.output_html:
         template = Template(filename=args.template)
