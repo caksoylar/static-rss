@@ -5,11 +5,23 @@ import re
 from argparse import ArgumentParser
 from collections import Counter
 from datetime import datetime, timezone
+from html import escape
 from textwrap import shorten
 from urllib.parse import urlparse
 
 import feedparser
 from mako.template import Template
+
+
+def slugify(text):
+    """Simple converter from arbitrary string to e.g. a valid html id value."""
+    text = text.strip().lower()
+    text = re.sub(r"[^a-z0-9_\-:.]", "-", text)
+    if not re.match(r"^[a-z]", text):
+        text = "id-" + text
+    text = re.sub(r"-+", "-", text)
+    text = text.strip("-")
+    return escape(text, quote=True)
 
 
 def extract_image(entry):
@@ -74,27 +86,33 @@ def main():
             json.dump(feeds, fo)
 
     entries = []
+    feed_list = []
     for feed_url, feed in feeds:
         title = shorten(feed["feed"]["title"], width=40, placeholder="…")
+        slug = slugify(title)
         icon = get_feed_icon(feed, feed_url)
+        feed_list.append((slug, title, len(feed["entries"])))
         for entry in feed["entries"]:
             entry["published_datetime"] = datetime(
                 *entry["published_parsed"][:6], tzinfo=timezone.utc
             )
             entry["source_title"] = title
+            entry["source_title_slug"] = slug
             entry["image_url"] = extract_image(entry)
             entry["source_icon_url"] = icon
             entries.append(entry)
     entries.sort(key=lambda x: x["published_datetime"], reverse=True)
 
     print("\nTop 100 stats:")
-    for feed, count in Counter((post["source_title"] for post in entries[:100])).most_common():
+    for feed, count in Counter(
+        (post["source_title"] for post in entries[:100])
+    ).most_common():
         print(f"{count:2d} <- {feed}")
 
     if args.output_html:
         template = Template(filename=args.template)
         with open(args.output_html, "w", encoding="utf-8") as fo:
-            fo.write(template.render(all_entries=entries))
+            fo.write(template.render(all_entries=entries, feed_list=feed_list))
 
 
 if __name__ == "__main__":

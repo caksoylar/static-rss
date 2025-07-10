@@ -83,24 +83,6 @@
             overflow: hidden;
         }
 
-        .article-image {
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            object-fit: scale-down;
-            height: 200px;
-        }
-
-        .read-more {
-            margin-top: 1rem;
-            font-weight: 600;
-            color: #0077cc;
-            text-decoration: none;
-        }
-
-        .read-more:hover {
-            text-decoration: underline;
-        }
-
         .article-summary img {
             display: none;
         }
@@ -109,27 +91,60 @@
             margin-top: 0;
         }
 
-        .refresh-button {
-        	position: fixed;
-        	bottom: 20px;
-        	right: 20px;
-        	width: 60px;
-        	height: 60px;
-        	background-color: #515151;
-        	border: none;
-        	border-radius: 50%;
-        	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        	cursor: pointer;
-        	z-index: 1000;
-        	display: flex;
-        	align-items: center;
-        	justify-content: center;
-        	padding: 16px;
-        	fill: #d5d5d5;
+        .article-image {
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            object-fit: scale-down;
+            height: 200px;
         }
 
-        .refresh-button:hover {
+        #refreshButton,#filterPopupBtn {
+            position: fixed;
+            bottom: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #515151;
+            border: none;
+            border-radius: 50%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            fill: #d5d5d5;
+        }
+
+        #refreshButton {
+            right: 20px;
+        }
+
+        #filterPopupBtn {
+            left: 20px;
+        }
+
+        #refreshButton:hover,#filterPopupBtn:hover {
             background-color: #c16b22;
+        }
+
+        #filterPopup {
+            display: none;
+            position: fixed;
+            bottom: 80px;
+            left: 20px;
+            z-index: 1001;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+            padding: 18px;
+            min-width: 260px;
+        }
+
+        .filter-item {
+            display: block;
+            margin-bottom: 4px;
         }
     </style>
     <script>
@@ -140,12 +155,35 @@
           el.textContent = date.toLocaleString();
         });
       });
+
+      // Filtering logic for checkboxes
+      function filterArticlesByCheckbox() {
+        const checked = Array.from(document.querySelectorAll('#sourceCheckboxForm input[type="checkbox"]:checked')).map(cb => cb.value);
+        document.querySelectorAll('#articles .article-card[data-source-title]').forEach(card => {
+          card.style.display = checked.includes(card.getAttribute('data-source-title')) ? '' : 'none';
+        });
+      }
+
+      let popupOpen = false;
+
+      document.addEventListener("DOMContentLoaded", function () {
+        // Show popup on button click
+        document.getElementById('filterPopupBtn').addEventListener('click', function() {
+          document.getElementById('filterPopup').style.display = popupOpen ? 'none' : 'block';
+          popupOpen = !popupOpen;
+        });
+
+        // Add event listeners for filtering
+        Array.from(document.querySelectorAll('#sourceCheckboxForm input[type="checkbox"]')).forEach(cb => {
+          cb.addEventListener('change', filterArticlesByCheckbox);
+        });
+      });
     </script>
 </head>
 <body>
-    <div class="articles-container">
+    <div class="articles-container" id="articles">
         % for entry in all_entries:
-        <div class="article-card">
+        <div class="article-card" data-source-title="${entry['source_title']}">
         % if entry['image_url']:
             <img src="${entry['image_url']}" alt="Thumbnail for ${entry['title'] | h}" class="article-image">
         % else:
@@ -167,8 +205,21 @@
         </div>
         % endfor
     </div>
-    <button class="refresh-button" onclick="location.reload()">
+    <button id="refreshButton" onclick="document.getElementById('sourceCheckboxForm').reset(); location.reload()">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M105.1 202.6c7.7-21.8 20.2-42.3 37.8-59.8c62.5-62.5 163.8-62.5 226.3 0L386.3 160 352 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l111.5 0c0 0 0 0 0 0l.4 0c17.7 0 32-14.3 32-32l0-112c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 35.2L414.4 97.6c-87.5-87.5-229.3-87.5-316.8 0C73.2 122 55.6 150.7 44.8 181.4c-5.9 16.7 2.9 34.9 19.5 40.8s34.9-2.9 40.8-19.5zM39 289.3c-5 1.5-9.8 4.2-13.7 8.2c-4 4-6.7 8.8-8.1 14c-.3 1.2-.6 2.5-.8 3.8c-.3 1.7-.4 3.4-.4 5.1L16 432c0 17.7 14.3 32 32 32s32-14.3 32-32l0-35.1 17.6 17.5c0 0 0 0 0 0c87.5 87.4 229.3 87.4 316.7 0c24.4-24.4 42.1-53.1 52.9-83.8c5.9-16.7-2.9-34.9-19.5-40.8s-34.9 2.9-40.8 19.5c-7.7 21.8-20.2 42.3-37.8 59.8c-62.5 62.5-163.8 62.5-226.3 0l-.1-.1L125.6 352l34.4 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L48.4 288c-1.6 0-3.2 .1-4.8 .3s-3.1 .5-4.6 1z"></path></svg>
     </button>
+    <button id="filterPopupBtn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M3.9 54.9C10.5 40.9 24.5 32 40 32l432 0c15.5 0 29.5 8.9 36.1 22.9s4.6 30.5-5.2 42.5L320 320.9 320 448c0 12.1-6.8 23.2-17.7 28.6s-23.8 4.3-33.5-3l-64-48c-8.1-6-12.8-15.5-12.8-25.6l0-79.1L9 97.3C-.7 85.4-2.8 68.8 3.9 54.9z"/></svg>
+    </button>
+    <div id="filterPopup">
+        <form id="sourceCheckboxForm">
+        % for slug, title, length in feed_list:
+            <label class="filter-item">
+                <input type="checkbox" value="${title | h}" id="checkbox_${slug}" name="sourceTitle" checked>
+                ${title | h} (${length})
+            </label>
+        % endfor
+        </form>
+    </div>
 </body>
 </html>
