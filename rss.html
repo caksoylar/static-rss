@@ -146,6 +146,61 @@
             display: block;
             margin-bottom: 4px;
         }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #121212;
+                color: #e0e0e0;
+            }
+
+            .article-card {
+                background: #1e1e1e;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+            }
+
+            .article-title {
+                color: #6fb4e8;
+            }
+
+            .article-date {
+                color: #aaa;
+            }
+
+            .article-source {
+                color: #ccc;
+            }
+
+            .article-summary {
+                color: #d0d0d0;
+            }
+
+            .article-summary a {
+                color: #6fb4e8;
+            }
+
+            #refreshButton,
+            #filterPopupBtn {
+                background-color: #2b2b2b;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+                fill: #e0e0e0;
+            }
+
+            #refreshButton:hover,
+            #filterPopupBtn:hover {
+                background-color: #c16b22;
+            }
+
+            #filterPopup {
+                background: #1e1e1e;
+                border: 1px solid #333;
+                box-shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
+                color: #e0e0e0;
+            }
+
+            .filter-item {
+                color: #ddd;
+            }
+        }
     </style>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
