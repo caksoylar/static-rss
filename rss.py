@@ -42,6 +42,11 @@ def extract_image(entry):
         if m := re.search(r'<img[^>]+src="([^">]+)"', summary):
             return m.group(1)
 
+    # 4. Fallback: look for <img> in content
+    if content := entry.get("content"):
+        if m := re.search(r'<img[^>]+src="([^">]+)"', content[0]["value"]):
+            return m.group(1)
+
     return None
 
 
