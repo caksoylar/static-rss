@@ -6,7 +6,6 @@ from argparse import ArgumentParser
 from collections import Counter
 from datetime import datetime, timezone
 from html import escape
-from textwrap import shorten
 from urllib.parse import urlparse
 
 import feedparser
@@ -93,7 +92,7 @@ def main():
     entries = []
     feed_list = []
     for feed_url, feed in feeds:
-        title = shorten(feed["feed"]["title"], width=40, placeholder="…")
+        title = feed["feed"]["title"]
         slug = slugify(title)
         icon = get_feed_icon(feed, feed_url)
         feed_list.append((slug, title, len(feed["entries"])))
