@@ -49,8 +49,11 @@ def extract_image(entry):
     return None
 
 
-def get_feed_icon(d, url):
+def get_feed_icon(d, url, favicon_url = None):
     """Try to find an icon for a given feed, might be extended later."""
+    if favicon_url:
+        return favicon_url
+
     if feed_image := d["feed"].get("image", {}).get("href"):
         return feed_image
 
@@ -77,10 +80,12 @@ def main():
             feed_urls = f.read().splitlines()
 
         feeds = []
-        for feed_url in feed_urls:
+        for feed_line in feed_urls:
+            parts = feed_line.split()
+            feed_url, favicon_url = parts[0], (None if len(parts) < 2 else parts[1])
             d = feedparser.parse(feed_url)
             print(f"{feed_url}: {len(d['entries'])}")
-            feeds.append((feed_url, d))
+            feeds.append((feed_url, favicon_url, d))
     else:
         with open(args.import_feeds, "r", encoding="utf-8") as f:
             feeds = json.load(f)
@@ -91,10 +96,10 @@ def main():
 
     entries = []
     feed_list = []
-    for feed_url, feed in feeds:
+    for feed_url, favicon_url, feed in feeds:
         title = feed["feed"]["title"]
         slug = slugify(title)
-        icon = get_feed_icon(feed, feed_url)
+        icon = get_feed_icon(feed, feed_url, favicon_url)
         feed_list.append((slug, title, len(feed["entries"])))
         for entry in feed["entries"]:
             entry["published_datetime"] = datetime(
