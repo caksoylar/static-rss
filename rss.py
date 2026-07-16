@@ -84,6 +84,9 @@ def main():
             parts = feed_line.split()
             feed_url, favicon_url = parts[0], (None if len(parts) < 2 else parts[1])
             d = feedparser.parse(feed_url)
+            if d.bozo:
+                print(f"ERROR: bozo bit set for {feed_url}, malformed xml? Skipping.")
+                continue
             print(f"{feed_url}: {len(d['entries'])}")
             feeds.append((feed_url, favicon_url, d))
     else:
