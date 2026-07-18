@@ -4,7 +4,7 @@ import json
 import re
 from argparse import ArgumentParser
 from collections import Counter
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from html import escape
 from urllib.parse import urlparse
 
@@ -69,6 +69,7 @@ def main():
     ap.add_argument("-d", "--dump-feeds", type=str)
     ap.add_argument("-i", "--import-feeds", type=str)
     ap.add_argument("-o", "--output-html", type=str)
+    ap.add_argument("-r", "--recency-filter", type=int, default=7)
     args = ap.parse_args()
 
     assert args.feed_list or args.import_feeds
@@ -112,7 +113,8 @@ def main():
             entry["source_title_slug"] = slug
             entry["image_url"] = extract_image(entry)
             entry["source_icon_url"] = icon
-            entries.append(entry)
+            if entry["published_datetime"] >= datetime.now(timezone.utc) - timedelta(days=args.recency_filter):
+                entries.append(entry)
     entries.sort(key=lambda x: x["published_datetime"], reverse=True)
 
     print("\nTop 100 stats:")
