@@ -49,7 +49,7 @@ def extract_image(entry):
     return None
 
 
-def get_feed_icon(d, url, favicon_url = None):
+def get_feed_icon(d, url, favicon_url=None):
     """Try to find an icon for a given feed, might be extended later."""
     if favicon_url:
         return favicon_url
@@ -113,20 +113,26 @@ def main():
             entry["source_title_slug"] = slug
             entry["image_url"] = extract_image(entry)
             entry["source_icon_url"] = icon
-            if entry["published_datetime"] >= datetime.now(timezone.utc) - timedelta(days=args.recency_filter):
+            if entry["published_datetime"] >= datetime.now(timezone.utc) - timedelta(
+                days=args.recency_filter
+            ):
                 entries.append(entry)
     entries.sort(key=lambda x: x["published_datetime"], reverse=True)
 
     print("\nTop 100 stats:")
-    for feed, count in Counter(
-        (post["source_title"] for post in entries[:100])
-    ).most_common():
+    for feed, count in Counter((post["source_title"] for post in entries[:100])).most_common():
         print(f"{count:2d} <- {feed}")
 
     if args.output_html:
         template = Template(filename=args.template)
         with open(args.output_html, "w", encoding="utf-8") as fo:
-            fo.write(template.render(all_entries=entries, feed_list=feed_list, update_date=datetime.now()))
+            fo.write(
+                template.render(
+                    all_entries=entries,
+                    feed_list=feed_list,
+                    update_date=datetime.now(tz=timezone.utc),
+                )
+            )
 
 
 if __name__ == "__main__":
