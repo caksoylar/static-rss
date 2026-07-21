@@ -126,7 +126,7 @@ def main():
     if args.output_html:
         template = Template(filename=args.template)
         with open(args.output_html, "w", encoding="utf-8") as fo:
-            fo.write(template.render(all_entries=entries, feed_list=feed_list))
+            fo.write(template.render(all_entries=entries, feed_list=feed_list, update_date=datetime.now()))
 
 
 if __name__ == "__main__":

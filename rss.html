@@ -157,6 +157,15 @@
             margin-bottom: 4px;
         }
 
+        .update-date {
+            position: fixed;
+            top: 0.25rem;
+            right: 1rem;
+            font-size: 0.75rem;
+            color: #888;
+            opacity: 0.75;
+        }
+
         @media (prefers-color-scheme: dark) {
             body {
                 background-color: #121212;
@@ -219,6 +228,11 @@
           const date = new Date(isoString);
           el.textContent = date.toLocaleString();
         });
+        document.querySelectorAll('.update-date').forEach(function (el) {
+          const isoString = el.dataset.dt;
+          const date = new Date(isoString);
+          el.textContent = 'Last updated: ' + date.toLocaleString();
+        });
       });
 
       // Filtering logic for checkboxes
@@ -246,6 +260,7 @@
     </script>
 </head>
 <body>
+    <div class="update-date" data-dt="${update_date.isoformat()}"></div>
     <div class="articles-container" id="articles">
         % for entry in all_entries:
         <div class="article-card" data-source-title="${entry['source_title']}">
