@@ -28,20 +28,27 @@ def extract_image(entry):
 
     # 1. Check media content
     if content := entry.get("media_content"):
-        return content[0].get("url")
+        if url := content[0].get("url"):
+            return url
 
-    # 2. Check enclosures
+    # 2. Check media thumbnail
+    if content := entry.get("media_thumbnail"):
+        if url := content[0].get("url"):
+            return url
+
+    # 3. Check enclosures
     if enclosures := entry.get("enclosures"):
         for enclosure in enclosures:
             if enclosure.get("type", "").startswith("image/"):
-                return enclosure.get("href")
+                if href := enclosure.get("href"):
+                    return href
 
-    # 3. Fallback: look for <img> in summary
+    # 4. Fallback: look for <img> in summary
     if summary := entry.get("summary"):
         if m := re.search(r'<img[^>]+src="([^">]+)"', summary):
             return m.group(1)
 
-    # 4. Fallback: look for <img> in content
+    # 5. Fallback: look for <img> in content
     if content := entry.get("content"):
         if m := re.search(r'<img[^>]+src="([^">]+)"', content[0]["value"]):
             return m.group(1)
