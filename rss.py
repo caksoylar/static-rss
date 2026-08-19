@@ -12,17 +12,6 @@ import feedparser
 from mako.template import Template
 
 
-def slugify(text):
-    """Simple converter from arbitrary string to e.g. a valid html id value."""
-    text = text.strip().lower()
-    text = re.sub(r"[^a-z0-9_\-:.]", "-", text)
-    if not re.match(r"^[a-z]", text):
-        text = "id-" + text
-    text = re.sub(r"-+", "-", text)
-    text = text.strip("-")
-    return escape(text, quote=True)
-
-
 def extract_image(entry):
     """Uses heuristics to find an image for a given entry."""
 
@@ -109,7 +98,6 @@ def main():
     feed_list = []
     for feed_url, favicon_url, feed in feeds:
         title = feed["feed"]["title"]
-        slug = slugify(title)
         icon = get_feed_icon(feed, feed_url, favicon_url)
         feed_list.append((slug, title, len(feed["entries"])))
         for entry in feed["entries"]:
@@ -117,7 +105,6 @@ def main():
                 *entry["published_parsed"][:6], tzinfo=timezone.utc
             )
             entry["source_title"] = title
-            entry["source_title_slug"] = slug
             entry["image_url"] = extract_image(entry)
             entry["source_icon_url"] = icon
             if entry["published_datetime"] >= datetime.now(timezone.utc) - timedelta(
