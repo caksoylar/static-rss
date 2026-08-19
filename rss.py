@@ -99,7 +99,7 @@ def main():
     for feed_url, favicon_url, feed in feeds:
         title = feed["feed"]["title"]
         icon = get_feed_icon(feed, feed_url, favicon_url)
-        feed_list.append((slug, title, len(feed["entries"])))
+        feed_list.append((title, len(feed["entries"])))
         for entry in feed["entries"]:
             entry["published_datetime"] = datetime(
                 *entry["published_parsed"][:6], tzinfo=timezone.utc
