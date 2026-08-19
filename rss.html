@@ -293,9 +293,9 @@
     </button>
     <div id="filterPopup">
         <form id="sourceCheckboxForm">
-        % for slug, title, length in feed_list:
+        % for title, length in feed_list:
             <label class="filter-item">
-                <input type="checkbox" value="${title | h}" id="checkbox_${slug}" name="sourceTitle" checked>
+                <input type="checkbox" value="${title | h}" name="sourceTitle" checked>
                 ${title | h} (${length})
             </label>
         % endfor
